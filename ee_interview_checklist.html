@@ -65,16 +65,16 @@
 
   .fields{
     background:var(--paper);
-    margin:-22px 18px 0;
-    border-radius:10px;
-    box-shadow:0 6px 18px rgba(22,31,52,0.18);
-    padding:16px 16px 8px;
-    position:relative;
-    z-index:2;
+    margin:14px 18px 0;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:14px 16px;
   }
-  .field-row{display:flex;gap:10px;margin-bottom:10px;}
+  .field-row{display:flex;gap:10px;margin-bottom:8px;}
+  .field-row:last-child{margin-bottom:0;}
   .field{flex:1;}
   .field label{font-size:11px;color:#7d7566;display:block;margin-bottom:3px;}
+  .field-hint{display:block;font-size:10.5px;color:#a49c8a;margin-top:2px;}
   .field input{
     width:100%;
     border:none;
@@ -226,6 +226,35 @@
   .tab-panel{display:none;}
   .tab-panel.active{display:block;}
 
+  .ocr-bar{
+    display:flex;align-items:center;gap:10px;
+    margin:14px 0 4px;
+  }
+  .ocr-btn{
+    display:flex;align-items:center;gap:6px;
+    background:var(--paper);border:1px dashed var(--brass);
+    color:var(--brass);font-family:inherit;font-size:12.5px;
+    padding:8px 14px;border-radius:18px;cursor:pointer;
+  }
+  .ocr-btn:disabled{opacity:.5;cursor:default;}
+  .ocr-status{font-size:11.5px;color:#7d7566;}
+  .ocr-result{
+    display:none;background:#fff;border:1px solid var(--line);
+    border-radius:10px;padding:14px;margin:10px 0 4px;
+  }
+  .ocr-result.show{display:block;}
+  .ocr-result-head{
+    font-size:12.5px;color:#7d7566;margin-bottom:6px;
+    display:flex;justify-content:space-between;
+  }
+  .ocr-close{cursor:pointer;color:#948c7c;}
+  .ocr-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .ocr-mini-btn{
+    border:1px solid var(--navy);background:transparent;color:var(--navy);
+    font-family:inherit;font-size:11.5px;padding:6px 12px;
+    border-radius:14px;cursor:pointer;
+  }
+
   .list-toolbar{
     display:flex;align-items:center;gap:12px;
     margin:18px 0 14px;
@@ -263,6 +292,18 @@
   .detail-row:last-child{border-bottom:none;}
   .detail-row .dk{flex:none;width:110px;color:#7d7566;}
   .detail-row .dv{flex:1;color:var(--ink);white-space:pre-wrap;word-break:break-word;}
+
+  .badge{
+    font-size:11px;padding:3px 10px;border-radius:12px;
+    flex:none;
+  }
+  .badge.done{background:#DDE7DF;color:var(--done);}
+  .badge.pending{background:#F1DFDB;color:#8a4b42;}
+  .lr-start{
+    border:1px solid var(--brass);background:transparent;color:var(--brass);
+    font-family:inherit;font-size:11.5px;padding:5px 12px;
+    border-radius:14px;cursor:pointer;flex:none;
+  }
 </style>
 </head>
 <body>
@@ -278,24 +319,39 @@
 <div class="wrap">
   <div class="tabbar">
     <button class="tab-btn active" data-tab="write">인터뷰 작성</button>
+    <button class="tab-btn" data-tab="targets">1단계 대상자</button>
     <button class="tab-btn" data-tab="list">등록 목록</button>
   </div>
 
   <div id="tab-write" class="tab-panel active">
+  <div class="ocr-bar">
+    <button type="button" id="ocrBtn" class="ocr-btn" title="원본 인터뷰 서식 사진으로 OCR 인식">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 8V6a2 2 0 0 1 2-2h2M4 16v2a2 2 0 0 0 2 2h2M20 8V6a2 2 0 0 0-2-2h-2M20 16v2a2 2 0 0 1-2 2h-2"/>
+        <circle cx="12" cy="12" r="3.5"/>
+      </svg>
+      사진으로 OCR 인식
+    </button>
+    <input type="file" id="ocrFile" accept="image/*" capture="environment" style="display:none;">
+    <span id="ocrStatus" class="ocr-status"></span>
+  </div>
+  <div id="ocrResultBox" class="ocr-result">
+    <div class="ocr-result-head">인식된 텍스트 <span id="ocrCloseBtn" class="ocr-close">닫기 ✕</span></div>
+    <textarea id="ocrText" class="free" style="min-height:120px;"></textarea>
+    <div class="ocr-actions">
+      <button type="button" id="ocrAutofillBtn" class="ocr-mini-btn">이름·담당자·일시 자동 채우기(추정)</button>
+      <button type="button" id="ocrToOpinionBtn" class="ocr-mini-btn">인터뷰 의견에 붙여넣기</button>
+    </div>
+  </div>
   <div class="fields">
     <div class="field-row">
       <div class="field"><label>훈련생 이름</label><input type="text" id="nameInput" placeholder="이름"></div>
       <div class="field"><label>인터뷰 담당자</label><input type="text" id="interviewerInput" placeholder="담당자"></div>
     </div>
     <div class="field-row">
-      <div class="field" style="max-width:120px;"><label>기수</label><input type="text" id="cohortInput" placeholder="예: 62"></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>일시</label><input type="date" id="dateInput"></div>
+      <div class="field" style="max-width:70px;"><label>기수</label><input type="text" id="cohortInput" placeholder="62"></div>
+      <div class="field"><label>일시</label><input type="date" id="dateInput"><span id="weekdayDisplay" class="field-hint"></span></div>
       <div class="field"><label>시간</label><input type="time" id="timeInput"></div>
-    </div>
-    <div class="field-row" style="margin-top:-4px;">
-      <div class="field"><span id="weekdayDisplay" style="font-size:11.5px;color:#a49c8a;"></span></div>
     </div>
     <div class="field-row">
       <div class="field">
@@ -533,6 +589,14 @@
   </form>
   </div>
 
+  <div id="tab-targets" class="tab-panel">
+    <div class="list-toolbar">
+      <button id="refreshTargetsBtn" class="refresh-btn">현황 새로고침</button>
+      <span id="targetsStatus" class="list-status"></span>
+    </div>
+    <div id="targetsContainer" class="list-container"></div>
+  </div>
+
   <div id="tab-list" class="tab-panel">
     <div class="list-toolbar">
       <button id="refreshListBtn" class="refresh-btn">목록 새로고침</button>
@@ -694,8 +758,72 @@
       if(btn.dataset.tab === 'list' && !listLoaded){
         loadList();
       }
+      if(btn.dataset.tab === 'targets'){
+        loadTargets();
+      }
     });
   });
+
+  // ---- 1단계 대상자 현황 (62기 1안 조편성 기준) ----
+  const TARGETS = [
+    { name:'김소형', group:'1조 (A그룹)', phone:'010-7210-4187' },
+    { name:'안혜경', group:'3조 (A그룹)', phone:'010-4338-5083' },
+    { name:'최창숙', group:'4조 (B그룹)', phone:'010-4876-9985' },
+    { name:'김재진', group:'5조 (B그룹)', phone:'010-8664-1498' },
+    { name:'박정인', group:'8조 (C그룹)', phone:'010-9103-7964' },
+    { name:'구도영', group:'9조 (C그룹)', phone:'010-7202-9220' },
+    { name:'이숙희', group:'10조 (D그룹)', phone:'010-5294-9335' },
+    { name:'원준환', group:'11조 (D그룹)', phone:'010-2081-1407' },
+    { name:'방봉미', group:'12조 (D그룹)', phone:'010-4254-7378' }
+  ];
+
+  function loadTargets(){
+    const status = document.getElementById('targetsStatus');
+    const container = document.getElementById('targetsContainer');
+    if(LIST_URL.includes('여기에')){
+      status.textContent = '아직 구글시트 웹앱 URL이 연결되지 않았어요.';
+      renderTargets([]);
+      return;
+    }
+    status.textContent = '현황 확인 중...';
+    fetch(LIST_URL + '?action=list')
+      .then(res => res.json())
+      .then(data => {
+        const submittedNames = (data.records || []).map(r => r['이름']);
+        renderTargets(submittedNames);
+        const doneCount = TARGETS.filter(t => submittedNames.includes(t.name)).length;
+        status.textContent = `${doneCount} / ${TARGETS.length}명 완료`;
+      })
+      .catch(()=>{
+        status.textContent = '현황을 불러오지 못했습니다.';
+        renderTargets([]);
+      });
+  }
+
+  function renderTargets(submittedNames){
+    const container = document.getElementById('targetsContainer');
+    container.innerHTML = '';
+    TARGETS.forEach(t=>{
+      const done = submittedNames.includes(t.name);
+      const row = document.createElement('div');
+      row.className = 'list-row';
+      row.innerHTML = `
+        <div>
+          <div class="lr-main">${t.name} · ${t.group}</div>
+          <div class="lr-sub">${t.phone}</div>
+        </div>
+        <span class="badge ${done ? 'done' : 'pending'}">${done ? '인터뷰 완료' : '인터뷰 대기'}</span>
+        ${done ? '' : `<button type="button" class="lr-start" data-name="${t.name}">시작</button>`}
+      `;
+      container.appendChild(row);
+    });
+    container.querySelectorAll('.lr-start').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.getElementById('nameInput').value = btn.dataset.name;
+        document.querySelector('.tab-btn[data-tab="write"]').click();
+      });
+    });
+  }
 
   // ---- 등록 목록 조회 ----
   const LIST_URL = submitForm.action;
@@ -741,8 +869,8 @@
       row.className = 'list-row';
       row.innerHTML = `
         <div>
-          <div class="lr-main">${rec['이름'] || '(이름 없음)'} · ${rec['기수'] || '-'}기</div>
-          <div class="lr-sub">${rec['일시'] || ''} ${rec['시간'] || ''} · ${rec['담당자'] || ''}</div>
+          <div class="lr-main">${rec['기수'] || '-'}기 · ${rec['이름'] || '(이름 없음)'}</div>
+          <div class="lr-sub">${rec['일시'] || ''} · 인터뷰어: ${rec['담당자'] || '-'}</div>
         </div>
         <div class="lr-arrow">›</div>`;
       row.addEventListener('click', ()=> showDetail(idx));
@@ -773,6 +901,73 @@
   }
 
   document.getElementById('refreshListBtn').addEventListener('click', loadList);
+
+  // ---- 카메라 촬영 → OCR 인식 ----
+  const ocrBtn = document.getElementById('ocrBtn');
+  const ocrFile = document.getElementById('ocrFile');
+  const ocrStatus = document.getElementById('ocrStatus');
+  const ocrResultBox = document.getElementById('ocrResultBox');
+  const ocrText = document.getElementById('ocrText');
+
+  ocrBtn.addEventListener('click', () => ocrFile.click());
+  document.getElementById('ocrCloseBtn').addEventListener('click', () => ocrResultBox.classList.remove('show'));
+
+  ocrFile.addEventListener('change', () => {
+    const file = ocrFile.files[0];
+    if(!file) return;
+    const scriptUrl = submitForm.action;
+    if(scriptUrl.includes('여기에')){
+      ocrStatus.textContent = '아직 구글시트 웹앱 URL이 연결되지 않았어요.';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      ocrBtn.disabled = true;
+      ocrStatus.textContent = '사진 인식 중... (수 초 소요)';
+      fetch(scriptUrl, {
+        method: 'POST',
+        headers: {'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({ action:'ocr', image: reader.result, mimeType: file.type })
+      })
+      .then(res => res.json())
+      .then(data => {
+        ocrBtn.disabled = false;
+        if(data.error){
+          ocrStatus.textContent = '인식 실패: ' + data.error;
+          return;
+        }
+        ocrStatus.textContent = '인식 완료';
+        ocrText.value = data.text || '(인식된 텍스트가 없습니다)';
+        ocrResultBox.classList.add('show');
+        ocrResultBox.scrollIntoView({behavior:'smooth', block:'start'});
+      })
+      .catch(()=>{
+        ocrBtn.disabled = false;
+        ocrStatus.textContent = '인식 중 오류가 발생했습니다.';
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('ocrToOpinionBtn').addEventListener('click', () => {
+    const opinion = document.getElementById('opinionInput');
+    opinion.value = (opinion.value ? opinion.value + '\n\n' : '') + ocrText.value;
+  });
+
+  document.getElementById('ocrAutofillBtn').addEventListener('click', () => {
+    const t = ocrText.value;
+    const nameM = t.match(/이름\s*[:：]?\s*([가-힣]{2,4})/);
+    const interviewerM = t.match(/담당자\s*[:：]?\s*([가-힣]{2,4})/);
+    const dateM = t.match(/(\d{4})[.\s]+(\d{1,2})[.\s]+(\d{1,2})/);
+    if(nameM) document.getElementById('nameInput').value = nameM[1];
+    if(interviewerM) document.getElementById('interviewerInput').value = interviewerM[1];
+    if(dateM){
+      const y = dateM[1], m = dateM[2].padStart(2,'0'), d = dateM[3].padStart(2,'0');
+      dateInput.value = `${y}-${m}-${d}`;
+      dateInput.dispatchEvent(new Event('change'));
+    }
+    ocrStatus.textContent = '추정 항목을 채웠어요. 내용을 꼭 확인해 주세요.';
+  });
 
   // ---- PWA 서비스워커 등록 ----
   if ('serviceWorker' in navigator) {
