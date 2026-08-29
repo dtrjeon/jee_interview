@@ -1,4 +1,4 @@
-const CACHE_NAME = "ee-interview-checklist-v1";
+const CACHE_NAME = "ee-interview-checklist-v2";
 const ASSETS = [
   "./index.html",
   "./ee_interview_checklist.html",
@@ -22,9 +22,27 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  // 구글 앱스스크립트 제출 요청은 캐시하지 않고 네트워크로 바로 전달
   if (event.request.method !== "GET") return;
 
+  const isHtml = event.request.headers.get("accept")?.includes("text/html")
+    || event.request.url.endsWith(".html");
+
+  if (isHtml) {
+    // HTML은 네트워크(최신 파일) 우선 — 파일을 고칠 때마다 버전을 안 올려도 바로 반영됨.
+    // 오프라인일 때만 캐시된 예전 버전을 보여줌.
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // 그 외 정적 파일(아이콘, manifest 등)은 기존처럼 캐시 우선
   event.respondWith(
     caches.match(event.request).then((cached) => {
       return (
