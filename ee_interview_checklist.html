@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>62기 전도폭발 인터뷰 체크리스트</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#233150">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="인터뷰체크">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F2E9;
+    --ink:#292420;
+    --navy:#233150;
+    --navy-deep:#161f34;
+    --brass:#B08A34;
+    --brass-soft:#DCC685;
+    --line:#D8CFBB;
+    --done:#4B6350;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Noto Sans KR',sans-serif;
+    padding-bottom:60px;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 18px;}
+
+  header{
+    background:var(--navy);
+    color:var(--paper);
+    padding:34px 18px 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  header::after{
+    content:"";
+    position:absolute;
+    right:-40px; top:-40px;
+    width:160px; height:160px;
+    border:1px solid rgba(246,242,233,0.15);
+    border-radius:50%;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.18em;
+    color:var(--brass-soft);
+    font-weight:500;
+  }
+  h1{
+    font-family:'Noto Serif KR',serif;
+    font-size:26px;
+    line-height:1.4;
+    margin:8px 0 4px;
+  }
+  .sub{font-size:13px;color:#C7CEDD;}
+
+  .fields{
+    background:var(--paper);
+    margin:-22px 18px 0;
+    border-radius:10px;
+    box-shadow:0 6px 18px rgba(22,31,52,0.18);
+    padding:16px 16px 8px;
+    position:relative;
+    z-index:2;
+  }
+  .field-row{display:flex;gap:10px;margin-bottom:10px;}
+  .field{flex:1;}
+  .field label{font-size:11px;color:#7d7566;display:block;margin-bottom:3px;}
+  .field input{
+    width:100%;
+    border:none;
+    border-bottom:1px solid var(--line);
+    background:transparent;
+    font-family:inherit;
+    font-size:14px;
+    padding:4px 2px;
+    color:var(--ink);
+  }
+  .field input:focus{outline:none;border-color:var(--brass);}
+
+  .progress-band{
+    display:flex;align-items:center;gap:12px;
+    margin:22px 0 6px;
+  }
+  .seal{
+    width:46px;height:46px;flex:none;border-radius:50%;
+    border:2px solid var(--brass);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Noto Serif KR',serif;
+    font-size:13px;color:var(--brass);
+    transition:all .35s ease;
+  }
+  .seal.full{background:var(--brass);color:var(--paper);transform:scale(1.05);}
+  .progress-text{font-size:13px;color:#665f52;}
+  .progress-text b{color:var(--ink);}
+  .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin:10px 0 26px;}
+  .bar-fill{height:100%;background:var(--brass);width:0%;transition:width .35s ease;}
+
+  section.block{margin-bottom:26px;}
+  .block-head{
+    display:flex;align-items:baseline;gap:8px;
+    border-bottom:1px solid var(--navy);
+    padding-bottom:6px;margin-bottom:12px;
+  }
+  .block-num{
+    font-family:'Noto Serif KR',serif;
+    font-size:13px;color:var(--brass);
+    letter-spacing:.05em;
+  }
+  .block-head h2{
+    font-family:'Noto Serif KR',serif;
+    font-size:18px;margin:0;color:var(--navy);
+  }
+
+  .item{
+    display:flex;gap:12px;
+    padding:12px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .item:last-child{border-bottom:none;}
+  .chk{
+    flex:none;width:24px;height:24px;margin-top:1px;
+    border:1.5px solid var(--navy);
+    border-radius:5px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;user-select:none;
+    transition:all .2s ease;
+    font-size:14px;color:transparent;
+  }
+  .chk.on{background:var(--done);border-color:var(--done);color:var(--paper);}
+  .item-body{flex:1;}
+  .item-title{font-size:14.5px;font-weight:500;line-height:1.5;}
+  .item-title.on{color:#8a8477;text-decoration:line-through;text-decoration-color:#b9b2a0;}
+  .item-note{font-size:12.5px;color:#7d7566;line-height:1.55;margin-top:4px;}
+  .item-detail{font-size:12px;color:#948c7c;line-height:1.6;margin-top:6px;padding:8px 10px;background:#EFE9DA;border-radius:6px;display:none;}
+  .item-detail.show{display:block;}
+  .toggle-detail{font-size:11px;color:var(--brass);cursor:pointer;margin-top:5px;display:inline-block;}
+
+  .yn{display:flex;gap:8px;margin-top:8px;}
+  .yn button{
+    border:1px solid var(--navy);
+    background:transparent;
+    color:var(--navy);
+    font-family:inherit;
+    font-size:12.5px;
+    padding:5px 14px;
+    border-radius:16px;
+    cursor:pointer;
+  }
+  .yn button.sel-y{background:var(--done);border-color:var(--done);color:var(--paper);}
+  .yn button.sel-n{background:#8a4b42;border-color:#8a4b42;color:var(--paper);}
+
+  .paren{
+    display:inline-block;font-weight:700;color:var(--navy);
+    cursor:pointer;user-select:none;letter-spacing:1px;
+    padding:0 2px;
+  }
+  .paren.on{color:var(--done);}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .chip{
+    border:1px solid var(--line);
+    padding:6px 12px;border-radius:16px;
+    font-size:12.5px;cursor:pointer;color:var(--ink);
+  }
+  .chip.sel{background:var(--navy);border-color:var(--navy);color:var(--paper);}
+
+  .free{
+    width:100%;border:1px solid var(--line);border-radius:6px;
+    background:#fff;font-family:inherit;font-size:13px;
+    padding:8px;margin-top:8px;resize:vertical;min-height:38px;
+  }
+
+  .inline-fill{
+    border:none;
+    border-bottom:1px solid var(--line);
+    background:transparent;
+    font-family:inherit;
+    font-weight:400;
+    font-size:13px;
+    color:var(--ink);
+    padding:1px 4px;
+    width:150px;
+  }
+  .inline-fill:focus{outline:none;border-color:var(--brass);}
+  .inline-fill::placeholder{color:#b0a894;}
+
+  footer{
+    text-align:center;font-size:11px;color:#a49c8a;
+    margin-top:20px;letter-spacing:.04em;
+  }
+
+  .submit-wrap{margin-top:30px;text-align:center;}
+  .submit-btn{
+    background:var(--navy);color:var(--paper);
+    border:none;border-radius:24px;
+    font-family:'Noto Serif KR',serif;
+    font-size:15px;padding:13px 34px;
+    cursor:pointer;letter-spacing:.03em;
+    box-shadow:0 4px 12px rgba(22,31,52,0.25);
+  }
+  .submit-btn:disabled{opacity:.55;cursor:default;}
+  .submit-msg{font-size:12px;color:#7d7566;margin-top:10px;min-height:16px;}
+  .submit-msg.ok{color:var(--done);}
+  .submit-msg.err{color:#8a4b42;}
+
+  .tabbar{
+    display:flex;gap:6px;margin:18px 0 4px;
+  }
+  .tab-btn{
+    flex:1;padding:10px 4px;border:1px solid var(--navy);
+    background:transparent;color:var(--navy);
+    font-family:'Noto Serif KR',serif;font-size:13.5px;
+    border-radius:8px;cursor:pointer;
+  }
+  .tab-btn.active{background:var(--navy);color:var(--paper);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .list-toolbar{
+    display:flex;align-items:center;gap:12px;
+    margin:18px 0 14px;
+  }
+  .refresh-btn{
+    border:1px solid var(--brass);background:transparent;color:var(--brass);
+    font-family:inherit;font-size:12.5px;padding:7px 14px;
+    border-radius:16px;cursor:pointer;
+  }
+  .list-status{font-size:12px;color:#7d7566;}
+
+  .list-row{
+    background:#fff;border:1px solid var(--line);border-radius:8px;
+    padding:12px 14px;margin-bottom:8px;cursor:pointer;
+    display:flex;justify-content:space-between;align-items:center;
+    gap:10px;
+  }
+  .list-row:hover{border-color:var(--brass);}
+  .list-row .lr-main{font-size:14px;font-weight:500;}
+  .list-row .lr-sub{font-size:11.5px;color:#948c7c;margin-top:2px;}
+  .list-row .lr-arrow{color:var(--brass);font-size:14px;}
+
+  .detail-panel{
+    display:none;background:#fff;border:1px solid var(--line);
+    border-radius:10px;padding:16px;margin-top:14px;
+  }
+  .detail-panel.show{display:block;}
+  .detail-panel .dp-close{
+    float:right;font-size:12px;color:#948c7c;cursor:pointer;
+  }
+  .detail-row{
+    display:flex;gap:10px;padding:7px 0;
+    border-bottom:1px dashed var(--line);font-size:13px;
+  }
+  .detail-row:last-child{border-bottom:none;}
+  .detail-row .dk{flex:none;width:110px;color:#7d7566;}
+  .detail-row .dv{flex:1;color:var(--ink);white-space:pre-wrap;word-break:break-word;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">EVANGELISM EXPLOSION · <span id="cohortDisplay">62</span>기</div>
+    <h1>수지주일반 전도폭발<br>훈련생 인터뷰 체크리스트</h1>
+    <div class="sub">인터뷰 담당자용 · 절차를 순서대로 확인하세요</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tabbar">
+    <button class="tab-btn active" data-tab="write">인터뷰 작성</button>
+    <button class="tab-btn" data-tab="list">등록 목록</button>
+  </div>
+
+  <div id="tab-write" class="tab-panel active">
+  <div class="fields">
+    <div class="field-row">
+      <div class="field"><label>훈련생 이름</label><input type="text" id="nameInput" placeholder="이름"></div>
+      <div class="field"><label>인터뷰 담당자</label><input type="text" id="interviewerInput" placeholder="담당자"></div>
+    </div>
+    <div class="field-row">
+      <div class="field" style="max-width:120px;"><label>기수</label><input type="text" id="cohortInput" placeholder="예: 62"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>일시</label><input type="date" id="dateInput"></div>
+      <div class="field"><label>시간</label><input type="time" id="timeInput"></div>
+    </div>
+    <div class="field-row" style="margin-top:-4px;">
+      <div class="field"><span id="weekdayDisplay" style="font-size:11.5px;color:#a49c8a;"></span></div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>인터뷰 방식</label>
+        <div class="chips" style="margin-top:5px;">
+          <div class="chip" data-radio="mode">대면</div>
+          <div class="chip" data-radio="mode">비대면</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-band">
+    <div class="seal" id="seal">인</div>
+    <div class="progress-text"><b id="doneCount">0</b> / <span id="totalCount">0</span> 항목 완료</div>
+  </div>
+  <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+
+  <!-- 1. 인사 -->
+  <section class="block">
+    <div class="block-head"><span class="block-num">01</span><h2>인사</h2></div>
+
+    <div class="item">
+      <div class="chk" data-id="i1"></div>
+      <div class="item-body">
+        <div class="item-title">일반생활 확인</div>
+        <div class="item-note">직장 / 사업(취업) 준비 중 / 사업 / 주부 / 기타</div>
+        <div class="chips">
+          <div class="chip" data-radio="life">직장</div>
+          <div class="chip" data-radio="life">사업(취업)준비중</div>
+          <div class="chip" data-radio="life">사업</div>
+          <div class="chip" data-radio="life">주부</div>
+          <div class="chip" data-radio="life">기타</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="i2"></div>
+      <div class="item-body">
+        <div class="item-title">언제부터 믿음생활 하셨는지 확인</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="i3"></div>
+      <div class="item-body">
+        <div class="item-title">교회 내 직분 확인</div>
+        <div class="chips">
+          <div class="chip" data-radio="duty">성도</div>
+          <div class="chip" data-radio="duty">집사</div>
+          <div class="chip" data-radio="duty">안수집사</div>
+          <div class="chip" data-radio="duty">권사</div>
+          <div class="chip" data-radio="duty">장로</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="i4"></div>
+      <div class="item-body">
+        <div class="item-title">교회 내 봉사 활동 확인 <input type="text" id="serviceInput" class="inline-fill" placeholder="예: 고등마을 목자"></div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="i5"></div>
+      <div class="item-body">
+        <div class="item-title">훈련생 모집간증 체크 후 전폭의 유익한 점·시간사용 우선순위 소개</div>
+        <div class="item-note">"전폭 훈련은 언제 어디서 누구에게나 복음을 전할 수 있게 만들어 줍니다."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 확인 -->
+  <section class="block">
+    <div class="block-head"><span class="block-num">02</span><h2>확인</h2></div>
+
+    <div class="item">
+      <div class="chk" data-id="c1"></div>
+      <div class="item-body">
+        <div class="item-title">이 훈련이 한 번 해볼 만한 가치가 있다고 생각하십니까?</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="c2"></div>
+      <div class="item-body">
+        <div class="item-title">전폭 훈련에 대해 잘 알고 신청하셨습니까?</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 인터뷰 내용 -->
+  <section class="block">
+    <div class="block-head"><span class="block-num">03</span><h2>인터뷰 내용</h2></div>
+
+    <div class="item">
+      <div class="chk" data-id="n1"></div>
+      <div class="item-body">
+        <div class="item-title">1. 신청반 확인</div>
+        <div class="chips">
+          <div class="chip" data-radio="class">수지화요반</div>
+          <div class="chip" data-radio="class">수지주일반</div>
+          <div class="chip" data-radio="class">분당주일반</div>
+          <div class="chip" data-radio="class">분당토요반</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="n2"></div>
+      <div class="item-body">
+        <div class="item-title">2. 현장실습 가능 요일·시간대 확인</div>
+        <div class="item-note">가능한 요일·시간대를 모두 기록</div>
+        <textarea id="fieldTimeInput" class="free" placeholder="예: 화요일 오전, 토요일 오후 등"></textarea>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="n3"></div>
+      <div class="item-body">
+        <div class="item-title">3. 훈련 기간 13주(주일 15:30~18:00) 지속 가능 여부</div>
+        <div class="item-note">2회까지 결석 시 보강 가능</div>
+        <div class="yn"><button data-yn="n3">Yes</button><button data-yn="n3-n">No</button></div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="n4"></div>
+      <div class="item-body">
+        <div class="item-title">4. 최소 3단계까지 쉬지 않고 계속할 수 있는지 확인</div>
+        <div class="yn"><button data-yn="n4">Yes</button><button data-yn="n4-n">No</button></div>
+        <span class="toggle-detail" data-detail="d4">단계별 훈련 내용 보기 ▾</span>
+        <div class="item-detail" id="d4">
+          1단계: 복음 전문 암기 · 2단계: 훈련자로서 훈련생을 이끌고 복음을 예화와 함께 깊이 묵상 · 3단계: 반대 의견에 대한 성경적 답변 훈련 · 4단계: 내적 치유 · 5단계: 제자도
+        </div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="n5"></div>
+      <div class="item-body">
+        <div class="item-title">5. 3인 1팀 책임 있는 응답 확인</div>
+        <div class="item-note">중간에 그만두면 팀이 깨지므로 책임 있게 응답해야 함</div>
+        <div class="yn"><span style="font-size:11px;color:#948c7c;margin-right:4px;">책임 응답</span><button data-yn="n5a">Yes</button><button data-yn="n5a-n">No</button></div>
+        <div class="yn"><span style="font-size:11px;color:#948c7c;margin-right:4px;">순종 서약</span><button data-yn="n5b">Yes</button><button data-yn="n5b-n">No</button></div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="n6"></div>
+      <div class="item-body">
+        <div class="item-title">6. 기도후원자 2명 선정 안내</div>
+        <div class="item-note">개강일에 기도후원자 카드 작성·제출</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="n7"></div>
+      <div class="item-body">
+        <div class="item-title">7. 수료 요건 안내</div>
+        <div class="item-note">모든 단계 공통: 현장전도 10회 이상, 단계별 수업 결석 2회 이하<br>1단계 추가: 현장전도 시 전체 복음제시 1회 이상, 전문 암기 구두시험 70점 이상</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="n8"></div>
+      <div class="item-body">
+        <div class="item-title">8. 전도 대상자 7명 선정·기록 안내</div>
+        <div class="item-note">개강일 제출 (별지 참조), 한 학기 동안 집중 기도 당부</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="n9"></div>
+      <div class="item-body">
+        <div class="item-title">9. 복음제시 전문 "은혜" 암기 안내</div>
+        <div class="item-note">개강일 필기시험(시험형식 : <input type="text" id="examFormatInput" class="inline-fill" style="width:110px;" placeholder="괄호 채우기">) 있음</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="n10"></div>
+      <div class="item-body">
+        <div class="item-title">10. 등록비·간식비 70,000원 납입 안내</div>
+        <div class="item-note">개강일까지 납입 · 2회 지각 = 결석 1회 · 지각 벌금 5,000원 · 부득이한 결석은 훈련자에게 사전 연락 후 보강</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="chk" data-id="n11"></div>
+      <div class="item-body">
+        <div class="item-title">11. 마무리 인사</div>
+        <div class="item-note">"인터뷰에 응해 주셔서 감사합니다." 훈련에 잘 임하도록 기도, 개강일·준비사항 리마인드</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 인터뷰 의견 -->
+  <section class="block">
+    <div class="block-head"><span class="block-num">04</span><h2>인터뷰 의견</h2></div>
+
+    <div class="item">
+      <div class="chk" data-id="op1"></div>
+      <div class="item-body">
+        <div class="item-title">종합 의견</div>
+        <div class="item-note">훈련생의 준비도, 특이사항, 배정 참고사항 등 자유롭게 기록</div>
+        <textarea id="opinionInput" class="free" style="min-height:110px" placeholder="인터뷰 의견을 서술해 주세요"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <form id="submitForm" method="POST" action="여기에_배포된_웹앱_URL_붙여넣기" class="submit-wrap">
+    <input type="hidden" name="기수">
+    <input type="hidden" name="이름">
+    <input type="hidden" name="담당자">
+    <input type="hidden" name="일시">
+    <input type="hidden" name="시간">
+    <input type="hidden" name="인터뷰방식">
+    <input type="hidden" name="일반생활">
+    <input type="hidden" name="교회내직분">
+    <input type="hidden" name="봉사활동">
+    <input type="hidden" name="신청반">
+    <input type="hidden" name="현장실습가능시간">
+    <input type="hidden" name="훈련기간지속가능">
+    <input type="hidden" name="삼단계지속가능">
+    <input type="hidden" name="팀책임응답">
+    <input type="hidden" name="순종서약">
+    <input type="hidden" name="필기시험형식">
+    <input type="hidden" name="인터뷰의견">
+    <input type="hidden" name="체크현황">
+    <button type="submit" id="submitBtn" class="submit-btn">구글시트에 제출</button>
+    <div id="submitMsg" class="submit-msg">제출 시 결과 페이지로 이동합니다</div>
+  </form>
+  </div>
+
+  <div id="tab-list" class="tab-panel">
+    <div class="list-toolbar">
+      <button id="refreshListBtn" class="refresh-btn">목록 새로고침</button>
+      <span id="listStatus" class="list-status"></span>
+    </div>
+    <div id="listContainer" class="list-container"></div>
+    <div id="detailPanel" class="detail-panel"></div>
+  </div>
+
+  <footer>62기 수지주일반 전도폭발훈련 · 인터뷰 체크리스트</footer>
+</div>
+
+<script>
+  const checks = document.querySelectorAll('.chk');
+  const totalEl = document.getElementById('totalCount');
+  const doneEl = document.getElementById('doneCount');
+  const barFill = document.getElementById('barFill');
+  const seal = document.getElementById('seal');
+
+  totalEl.textContent = checks.length;
+
+  function updateProgress(){
+    const done = document.querySelectorAll('.chk.on').length;
+    doneEl.textContent = done;
+    const pct = Math.round((done/checks.length)*100);
+    barFill.style.width = pct + '%';
+    seal.classList.toggle('full', pct === 100);
+  }
+
+  checks.forEach(chk=>{
+    chk.addEventListener('click', ()=>{
+      chk.classList.toggle('on');
+      chk.textContent = chk.classList.contains('on') ? '✓' : '';
+      const title = chk.parentElement.querySelector('.item-title');
+      if(title) title.classList.toggle('on', chk.classList.contains('on'));
+      updateProgress();
+    });
+  });
+
+  document.querySelectorAll('.toggle-detail').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      const target = document.getElementById(t.dataset.detail);
+      target.classList.toggle('show');
+      t.textContent = target.classList.contains('show') ? '단계별 훈련 내용 접기 ▴' : '단계별 훈련 내용 보기 ▾';
+    });
+  });
+
+  document.querySelectorAll('.yn button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const group = btn.parentElement;
+      group.querySelectorAll('button').forEach(b=>b.classList.remove('sel-y','sel-n'));
+      if(btn.textContent === 'Yes') btn.classList.add('sel-y');
+      else btn.classList.add('sel-n');
+    });
+  });
+
+  document.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const group = chip.dataset.radio;
+      document.querySelectorAll(`.chip[data-radio="${group}"]`).forEach(c=>c.classList.remove('sel'));
+      chip.classList.add('sel');
+    });
+  });
+
+  document.querySelectorAll('.paren').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      p.classList.toggle('on');
+      p.innerHTML = p.classList.contains('on') ? '(&nbsp;✓&nbsp;)' : '(&nbsp;&nbsp;)';
+    });
+  });
+
+  updateProgress();
+
+  const cohortInput = document.getElementById('cohortInput');
+  const cohortDisplay = document.getElementById('cohortDisplay');
+  cohortInput.addEventListener('input', ()=>{
+    cohortDisplay.textContent = cohortInput.value.trim() || '62';
+  });
+
+  const dateInput = document.getElementById('dateInput');
+  const weekdayDisplay = document.getElementById('weekdayDisplay');
+  const weekdays = ['일','월','화','수','목','금','토'];
+  dateInput.addEventListener('change', ()=>{
+    if(!dateInput.value){ weekdayDisplay.textContent=''; return; }
+    const d = new Date(dateInput.value + 'T00:00:00');
+    const [y,m,day] = dateInput.value.split('-');
+    weekdayDisplay.textContent = `${y}. ${m}. ${day}. (${weekdays[d.getDay()]}요일)`;
+  });
+
+  // ---- 구글시트 제출 (폼 리다이렉트 방식) ----
+  const submitForm = document.getElementById('submitForm');
+
+  function getSelectedChip(group){
+    const sel = document.querySelector(`.chip[data-radio="${group}"].sel`);
+    return sel ? sel.textContent : '';
+  }
+  function getYn(id){
+    const yBtn = document.querySelector(`[data-yn="${id}"]`);
+    if(!yBtn) return '';
+    return yBtn.classList.contains('sel-y') ? 'Yes' : (document.querySelector(`[data-yn="${id}-n"]`)?.classList.contains('sel-n') ? 'No' : '');
+  }
+  function getChecks(){
+    const arr = [];
+    checks.forEach(c=>{
+      const title = c.parentElement.querySelector('.item-title');
+      arr.push(`${title ? title.textContent.replace(/\s+/g,' ').trim() : c.dataset.id}: ${c.classList.contains('on') ? 'O' : ''}`);
+    });
+    return arr.join(' / ');
+  }
+
+  submitForm.addEventListener('submit', (ev)=>{
+    const msg = document.getElementById('submitMsg');
+
+    if(submitForm.action.includes('여기에')){
+      ev.preventDefault();
+      msg.textContent = '아직 구글시트 웹앱 URL이 연결되지 않았어요. Code.gs 배포 후 URL을 넣어주세요.';
+      msg.className = 'submit-msg err';
+      return;
+    }
+
+    const values = {
+      기수: cohortInput.value,
+      이름: document.getElementById('nameInput').value,
+      담당자: document.getElementById('interviewerInput').value,
+      일시: dateInput.value,
+      시간: timeInput.value,
+      인터뷰방식: getSelectedChip('mode'),
+      일반생활: getSelectedChip('life'),
+      교회내직분: getSelectedChip('duty'),
+      봉사활동: document.getElementById('serviceInput').value,
+      신청반: getSelectedChip('class'),
+      현장실습가능시간: document.getElementById('fieldTimeInput').value,
+      훈련기간지속가능: getYn('n3'),
+      삼단계지속가능: getYn('n4'),
+      팀책임응답: getYn('n5a'),
+      순종서약: getYn('n5b'),
+      필기시험형식: document.getElementById('examFormatInput').value,
+      인터뷰의견: document.getElementById('opinionInput').value,
+      체크현황: getChecks()
+    };
+
+    Object.entries(values).forEach(([key, val])=>{
+      const field = submitForm.querySelector(`[name="${key}"]`);
+      if(field) field.value = val;
+    });
+
+    msg.textContent = '제출 중... 잠시 후 완료 페이지로 이동합니다';
+    msg.className = 'submit-msg';
+    // form이 이 시점 이후 자연스럽게 action(SCRIPT_URL)으로 리다이렉트됩니다
+  });
+
+  // ---- 탭 전환 ----
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      if(btn.dataset.tab === 'list' && !listLoaded){
+        loadList();
+      }
+    });
+  });
+
+  // ---- 등록 목록 조회 ----
+  const LIST_URL = submitForm.action;
+  let listLoaded = false;
+  let listData = [];
+
+  function loadList(){
+    const status = document.getElementById('listStatus');
+    const container = document.getElementById('listContainer');
+    document.getElementById('detailPanel').classList.remove('show');
+
+    if(LIST_URL.includes('여기에')){
+      status.textContent = '아직 구글시트 웹앱 URL이 연결되지 않았어요.';
+      return;
+    }
+
+    status.textContent = '불러오는 중...';
+    container.innerHTML = '';
+
+    fetch(LIST_URL + '?action=list')
+      .then(res => res.json())
+      .then(data => {
+        listData = data.records || [];
+        listLoaded = true;
+        renderList();
+        status.textContent = `총 ${listData.length}건`;
+      })
+      .catch(()=>{
+        status.textContent = '목록을 불러오지 못했습니다. URL 또는 배포 설정을 확인해 주세요.';
+      });
+  }
+
+  function renderList(){
+    const container = document.getElementById('listContainer');
+    container.innerHTML = '';
+    if(listData.length === 0){
+      container.innerHTML = '<div class="list-status">등록된 내용이 없습니다.</div>';
+      return;
+    }
+    listData.slice().reverse().forEach((rec, idxRev)=>{
+      const idx = listData.length - 1 - idxRev;
+      const row = document.createElement('div');
+      row.className = 'list-row';
+      row.innerHTML = `
+        <div>
+          <div class="lr-main">${rec['이름'] || '(이름 없음)'} · ${rec['기수'] || '-'}기</div>
+          <div class="lr-sub">${rec['일시'] || ''} ${rec['시간'] || ''} · ${rec['담당자'] || ''}</div>
+        </div>
+        <div class="lr-arrow">›</div>`;
+      row.addEventListener('click', ()=> showDetail(idx));
+      container.appendChild(row);
+    });
+  }
+
+  function showDetail(idx){
+    const rec = listData[idx];
+    const panel = document.getElementById('detailPanel');
+    const labels = {
+      제출시각:'제출시각', 기수:'기수', 이름:'이름', 담당자:'담당자', 일시:'일시', 시간:'시간',
+      인터뷰방식:'인터뷰 방식', 일반생활:'일반생활', 교회내직분:'교회 내 직분', 봉사활동:'봉사활동',
+      신청반:'신청반', 현장실습가능시간:'현장실습 가능시간', 훈련기간지속가능:'훈련기간 지속가능',
+      삼단계지속가능:'3단계 지속가능', 팀책임응답:'팀 책임응답', 순종서약:'순종서약',
+      필기시험형식:'필기시험 형식', 인터뷰의견:'인터뷰 의견', 체크현황:'체크 현황'
+    };
+    let html = '<span class="dp-close" id="dpClose">닫기 ✕</span>';
+    Object.entries(labels).forEach(([key,label])=>{
+      const val = rec[key];
+      if(val === undefined || val === '') return;
+      html += `<div class="detail-row"><div class="dk">${label}</div><div class="dv">${val}</div></div>`;
+    });
+    panel.innerHTML = html;
+    panel.classList.add('show');
+    document.getElementById('dpClose').addEventListener('click', ()=> panel.classList.remove('show'));
+    panel.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  document.getElementById('refreshListBtn').addEventListener('click', loadList);
+
+  // ---- PWA 서비스워커 등록 ----
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(()=>{});
+    });
+  }
+</script>
+</body>
+</html>
